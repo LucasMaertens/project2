@@ -3,6 +3,10 @@ package pacman;
 /**
  * Each instance of this class represents a maze layout, specifying the width and height of the maze
  * and, for each position in the maze, whether it is passable or not.
+ * @immutable
+ * @invar |getWidth()>=1
+ * @invar | getHeight()>=1
+	 
  */
 public class MazeMap {
 	//zelf geschreven
@@ -15,10 +19,15 @@ public class MazeMap {
 	 
 	private int width;
 	private int height;
+	/**
+	 * @representationObject
+	 */
 	private boolean [] passable;
 	//
 	/**
 	 * Returns the width (i.e. the number of columns) of this maze map.
+	 * @basic
+	 * @
 	 */
 	public int getWidth() {
 		return width;
@@ -26,6 +35,7 @@ public class MazeMap {
 	
 	/**
 	 * Returns the height (i.e. the number of rows) of this maze map.
+	 * @basic
 	 */
 	public int getHeight() { 
 		return height;
@@ -34,16 +44,18 @@ public class MazeMap {
 	/**
 	 * Returns whether the square in this maze at row index {@code row} and column index {@code column} is passable.
 	 * The square in the top-left corner of the maze has row index 0 and column index 0.
-	 * @throws IllegalArgumentException| rowIndex<0 ||columnIndex<0 ||rowIndex>getHeight() ||  columnIndex>getWidth()
+	 * @throws IllegalArgumentException| rowIndex<0 ||columnIndex<0 ||rowIndex>=getHeight() ||  columnIndex>=getWidth()
+	 * @basic
+	 * @inspects
 	 */
 	public boolean isPassable(int rowIndex, int columnIndex) { 
 		if (rowIndex<0)
 			throw new IllegalArgumentException("rowIndex must be greater of equal to 1");
 		if(columnIndex<0)
 			throw new IllegalArgumentException("columnIndex must be greater of equal to 1");
-		if(rowIndex>getWidth())
+		if(columnIndex>=getWidth())
 			throw new IllegalArgumentException("rowIndex must be less or equal to the width of the maze ");
-		if(columnIndex>getHeight())
+		if(rowIndex>=getHeight())
 			throw new IllegalArgumentException("columnIndex must be less or equal to height of the maze");
 		if (passable[(rowIndex+columnIndex)+(rowIndex*(width-1))]==true)
 			return true;
@@ -71,7 +83,7 @@ public class MazeMap {
 			throw new IllegalArgumentException("length of row major order passable must be greater of equal to height*width");
 		this.width=width;
 		this.height=height;
-		this.passable=passable;
+		this.passable=passable.clone();
 			
 	}
 	

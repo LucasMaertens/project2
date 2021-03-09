@@ -4,22 +4,25 @@ import java.util.Random;
 
 /**
  * Each instance of this class represents a ghost in a Pac-Man maze.
- * @immutable
+ * 
  */
 
 public class Ghost {
 	private Square square;
 	private Direction direction;
 	
+	/*
+	 * @basic
+	 */
 	public Square getSquare() { return square; }
 	
 	/**
 	 * Returns the direction in which this ghost will preferably move next.
+	 *@basic
 	 */
 	public Direction getDirection() { 
-		Random rnd = new Random();
 		
-		return chooseNextMoveDirection(rnd);
+		return direction;
 	}
 	
 	/**
@@ -42,6 +45,7 @@ public class Ghost {
 	 * 
 	 * @throws IllegalArgumentException| (square instanceof Square)==false
 	 * @post| getSquare()==square
+	 * @mutates|this
 	 */
 	public void setSquare(Square square) {
 		if (square instanceof Square)
@@ -52,15 +56,15 @@ public class Ghost {
 	}
 	
 	/**
-	 * @throws  IllegalArgumentException | direction instanceof Direction ==false
+	 * 
 	 * @post | getDirection()==direction
+	 * @mutates| this
 	 */
 	
 	public void setDirection(Direction direction) { 
-		if (direction instanceof Direction)
+		
 			this.direction=direction;
-		else 
-			throw new IllegalArgumentException("argument must be instance of Direction");
+		
 	}
 	
 	private static int MOVE_FORWARD_PREFERENCE = 10;

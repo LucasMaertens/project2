@@ -2,6 +2,8 @@ package pacman;
 
 /**
  * Each instance of this class represents the player-controlled Pac-Man character in a Pac-Man maze.
+ * @invar |getSquare()!=null
+ * @invar| getNbLives()>=0
  */
 public class PacMan {
 	/**
@@ -11,10 +13,16 @@ public class PacMan {
 	private int nblives;
 	private Square square;
 	
+	/**
+	 * 
+	 * @basic
+	 */
 	public Square getSquare() { 
 		return square;
 	}
-	
+	/*
+	 * @basic
+	 */
 	public int getNbLives() { return nblives; }
 	/**
 	 * 
@@ -35,6 +43,7 @@ public class PacMan {
 	 * 
 	 * @throws IllegalArgumentException| square==null
 	 * @post| getSquare()==square
+	 * @mutates|this
 	 */
 	public void setSquare(Square square) { 
 		if(square==null)

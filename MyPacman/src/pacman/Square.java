@@ -5,40 +5,54 @@ import java.util.Arrays;
 /**
  * Each instance of this class represents a position in a maze, specified by a row index and a column index.
  * The top row and the leftmost column have index 0.
- * @immutable
+ * @invar|getColumnIndex()>=0
+ * @invar | getRowIndex()>=0
+ * 
+ *
  */
 public class Square {
-	private static Square werksquare;
+	
 	/**
 	 * @invar | columnindex>=0
 	 * @invar | rowindex>=0
+	 * 
 	 */
 	private MazeMap mazemap;
 	private int rowindex;
 	private int columnindex;
-	
+	/**
+	 * @basic
+	 * 
+	 */
 	public MazeMap getMazeMap() {
-		MazeMap mazemapwerk=mazemap;
+		MazeMap mazemapwerk= mazemap;
 		return mazemapwerk ; 
 		}
-	
+	/**
+	 * 
+	 * @basic
+	 */
 	public int getRowIndex() { return rowindex; }
-	
+	/**
+	 * 
+	 * @basic
+	 */
 	public int getColumnIndex() { return columnindex; }
 	
 	/**
 	 * 
+	 * @inspects 
 	 * 
 	 */
-	public boolean isPassable() { return mazemap.isPassable(rowindex,columnindex); }
+	public boolean isPassable() { return getMazeMap().isPassable(getRowIndex(),getColumnIndex()); }
 	/**
 	 * 
 	 * @post |result!=null
 	 * @post | result.getRowIndex()==rowIndex
 	 * @post | result.getColumnIndex()==columnIndex
 	 * @post | result.getMazeMap()==mazeMap
-	 * @throws IllegalArgumentException| rowIndex<0 ||columnIndex<0 ||rowIndex>mazeMap.getHeight() ||  columnIndex>mazeMap.getWidth()
-	 * 
+	 * @throws IllegalArgumentException| rowIndex<0 ||columnIndex<0 ||rowIndex>=mazeMap.getHeight() ||  columnIndex>=mazeMap.getWidth()
+	 * @throws IllegalArgumentException | mazeMap==null
 	 */
 	
 	public static Square of(MazeMap mazeMap, int rowIndex, int columnIndex) {
@@ -50,7 +64,8 @@ public class Square {
 			throw new IllegalArgumentException("columnIndex can't be greater than the width of mazemap");
 		if (rowIndex>mazeMap.getHeight())
 			throw new IllegalArgumentException("rowIndex can't be greater than height of mazemap");
-		
+		if(mazeMap==null)
+			throw new IllegalArgumentException("maemap can't be null.");
 		
 		Square werksquare =new Square();
 		werksquare.columnindex=columnIndex;
@@ -64,8 +79,53 @@ public class Square {
 	 * If this square has no neigbor in the given direction, return the square that is furthest away in the opposite direction.
 	 */
 	// No formal documentation required
-	public Square getNeighbor(Direction direction) {throw new RuntimeException("Not yet implemented");
+	public Square getNeighbor(Direction direction) {
 		// Implementation hint: use method java.lang.Math.floorMod.
+		Square buur = new Square();
+		
+		
+		if (direction==Direction.RIGHT) 
+			if((getColumnIndex()%(mazemap.getWidth()-1)!=0))
+					
+					buur=Square.of(mazemap, getRowIndex(), getColumnIndex()+1);
+			else 
+				if(getColumnIndex()==0)
+					buur=Square.of(mazemap, getRowIndex(), getColumnIndex()+1);
+				else
+					buur=Square.of(mazemap, getRowIndex(), 0);
+		
+		if (direction==Direction.LEFT)
+			
+			if((getColumnIndex()%(mazemap.getWidth()-1)==0))
+				if (getColumnIndex()==0)
+				
+					buur=Square.of(mazemap, getRowIndex(), mazemap.getWidth()-1);
+				else
+					buur=Square.of(mazemap, getRowIndex(), getColumnIndex()-1);
+			else 
+				buur=Square.of(mazemap, getRowIndex(), getColumnIndex()-1);
+		if(direction==Direction.UP)
+			if(getRowIndex()%(mazemap.getHeight()-1)==0)
+				if( getRowIndex()==0)
+					buur=Square.of(mazemap,  mazemap.getHeight()-1, columnindex);
+				else	
+					buur=Square.of(mazemap, getRowIndex()-1, getColumnIndex());
+				
+			else 
+				buur=Square.of(mazemap, getRowIndex()-1, getColumnIndex());
+		if(direction==Direction.DOWN)
+			if (Math.floorMod(getRowIndex(),mazemap.getHeight()-1)==0)
+				if (getRowIndex()==0)
+					
+					buur=Square.of(mazemap, getRowIndex()+1, getColumnIndex());
+				else
+					buur=Square.of(mazemap, 0, columnindex);
+			else
+				buur=Square.of(mazemap, getRowIndex()+1, getColumnIndex());
+		
+		return buur;
+			
+			
 		
 		
 			
@@ -76,7 +136,13 @@ public class Square {
 	 */
 	// No formal documentation required
 	public boolean canMove(Direction direction) {
-		throw new RuntimeException("Not yet implemented");
+	    Square buur=new Square();
+		buur=this.getNeighbor(direction);
+		
+		if(buur.isPassable()==true)
+			return true;
+		else 
+			return false;
 	}
 
 	/**
@@ -85,7 +151,85 @@ public class Square {
 	 */
 	// No formal documentation required
 	public Direction[] getPassableDirectionsExcept(Direction excludedDirection) {
-		throw new RuntimeException("Not yet implemented");
+		Direction[] lijst=new Direction[3];
+		int counter=0;
+		
+		int j=0;
+		if (excludedDirection==Direction.LEFT) {
+				
+				if (this.canMove(Direction.values()[0])==true)
+					lijst[0]=Direction.values()[0];
+				
+					
+				if (this.canMove(Direction.values()[1])==true)
+					lijst[1]=Direction.values()[1];
+					
+				if(this.canMove(Direction.values()[3])==true)
+					lijst[2]=Direction.values()[3];
+					
+				for(int i=0;i<3;i++)
+					if (lijst[i]==null)
+						counter++;
+			
+				
+				
+		}			
+					
+		if(excludedDirection==Direction.RIGHT) {
+					
+				if (this.canMove(Direction.values()[1]))
+						
+					lijst[0]=Direction.values()[1];
+				if (this.canMove(Direction.values()[2]))
+						lijst[1]=Direction.values()[2];
+				if(this.canMove(Direction.values()[3]))
+						lijst[2]=Direction.values()[3];
+				for(int i=0;i<3;i++)
+						if (lijst[i]==null)
+							counter++;
+					
+				
+		}
+		
+	    if	(excludedDirection==Direction.UP) {
+			if (this.canMove(Direction.values()[0]))
+				lijst[0]=Direction.values()[0];
+			if (this.canMove(Direction.values()[1]))
+			    lijst[1]=Direction.values()[1];
+			if(this.canMove(Direction.values()[2]))
+				lijst[2]=Direction.values()[2];
+			for(int i=0;i<3;i++)
+				if (lijst[i]==null)
+					counter++;
+			
+			
+			}
+			
+		if (excludedDirection==Direction.DOWN) {
+			if (this.canMove(Direction.values()[0]))
+				lijst[0]=Direction.values()[0];
+			if (this.canMove(Direction.values()[3]))
+			    lijst[1]=Direction.values()[3];
+			if(this.canMove(Direction.values()[2]))
+				lijst[2]=Direction.values()[2];
+			
+			for(int i=0;i<3;i++)
+				if (lijst[i]==null)
+					counter++;
+				
+			
+			}
+		Direction[] nieuwelijst=new Direction[3-counter];
+		for(int i=0;i<3;i++)
+			if (lijst[i]!=null)
+				nieuwelijst[j]=lijst[i];
+				j++;
+		if(counter!=0)
+			return nieuwelijst;
+		else
+			return lijst;
+		 
+		 
 	}
 	
 	/**
