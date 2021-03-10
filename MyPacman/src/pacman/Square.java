@@ -7,7 +7,7 @@ import java.util.Arrays;
  * The top row and the leftmost column have index 0.
  * @invar|getColumnIndex()>=0
  * @invar | getRowIndex()>=0
- * 
+ * @immutable // ben je dit zeker?
  *
  */
 public class Square {
@@ -15,18 +15,18 @@ public class Square {
 	/**
 	 * @invar | columnindex>=0
 	 * @invar | rowindex>=0
-	 * 
+	 *
 	 */
 	private MazeMap mazemap;
 	private int rowindex;
 	private int columnindex;
 	/**
 	 * @basic
-	 * 
+	 * @creates| mazemapwerk
 	 */
 	public MazeMap getMazeMap() {
-		MazeMap mazemapwerk= mazemap;
-		return mazemapwerk ; 
+		MazeMap mazemapwerk=mazemap;
+		return mazemap; 
 		}
 	/**
 	 * 
@@ -40,19 +40,25 @@ public class Square {
 	public int getColumnIndex() { return columnindex; }
 	
 	/**
-	 * 
-	 * @inspects 
-	 * 
+	 *
+	 * @inspects |this
+	 * @post| result==getMazeMap().isPassable(getRowIndex(),getColumnIndex())
+	 * @creates|result
 	 */
-	public boolean isPassable() { return getMazeMap().isPassable(getRowIndex(),getColumnIndex()); }
+	public boolean isPassable() { 
+		return getMazeMap().isPassable(this.getRowIndex(),this.getColumnIndex()); }
 	/**
-	 * 
-	 * @post |result!=null
+	 * @creates |werksquare
+	 * @post | result!=null
 	 * @post | result.getRowIndex()==rowIndex
 	 * @post | result.getColumnIndex()==columnIndex
 	 * @post | result.getMazeMap()==mazeMap
-	 * @throws IllegalArgumentException| rowIndex<0 ||columnIndex<0 ||rowIndex>=mazeMap.getHeight() ||  columnIndex>=mazeMap.getWidth()
-	 * @throws IllegalArgumentException | mazeMap==null
+	 * @throws IllegalArgumentException| rowIndex>=mazeMap.getHeight() ||  columnIndex>=mazeMap.getWidth()
+	 * @throws IllegalArgumentException | columnIndex<0
+	 * @throws IllegalArgumentException | rowIndex<0
+	 * 
+	 * @inspects| rowIndex,columnIndex //mazemap kan hier niet staan wordt onderlijnd
+	 * //@mutates werksquare PAKT HIJ NIET+foutmelding dat het niet mag
 	 */
 	
 	public static Square of(MazeMap mazeMap, int rowIndex, int columnIndex) {
@@ -60,12 +66,12 @@ public class Square {
 			throw new IllegalArgumentException("rowIndex must be greater of equal to 1");
 		if(columnIndex<0)
 			throw new IllegalArgumentException("columnIndex must be greater of equal to 1");
-		if(columnIndex>mazeMap.getWidth())
+		if(columnIndex>=mazeMap.getWidth())
 			throw new IllegalArgumentException("columnIndex can't be greater than the width of mazemap");
-		if (rowIndex>mazeMap.getHeight())
+		if (rowIndex>=mazeMap.getHeight())
 			throw new IllegalArgumentException("rowIndex can't be greater than height of mazemap");
-		if(mazeMap==null)
-			throw new IllegalArgumentException("maemap can't be null.");
+		if (mazeMap instanceof MazeMap==false)
+			throw new IllegalArgumentException("mazemap must be not null");
 		
 		Square werksquare =new Square();
 		werksquare.columnindex=columnIndex;
@@ -75,8 +81,10 @@ public class Square {
 	}
 	
 	/**
+	 * 
 	 * Returns this square's neighbor in the given direction.
 	 * If this square has no neigbor in the given direction, return the square that is furthest away in the opposite direction.
+	 * 
 	 */
 	// No formal documentation required
 	public Square getNeighbor(Direction direction) {
@@ -85,7 +93,7 @@ public class Square {
 		
 		
 		if (direction==Direction.RIGHT) 
-			if((getColumnIndex()%(mazemap.getWidth()-1)!=0))
+			if(Math.floorMod(getColumnIndex(),mazemap.getWidth()-1)!=0)
 					
 					buur=Square.of(mazemap, getRowIndex(), getColumnIndex()+1);
 			else 
@@ -96,7 +104,7 @@ public class Square {
 		
 		if (direction==Direction.LEFT)
 			
-			if((getColumnIndex()%(mazemap.getWidth()-1)==0))
+			if(Math.floorMod(getColumnIndex(),mazemap.getWidth()-1)==0)
 				if (getColumnIndex()==0)
 				
 					buur=Square.of(mazemap, getRowIndex(), mazemap.getWidth()-1);
@@ -105,9 +113,9 @@ public class Square {
 			else 
 				buur=Square.of(mazemap, getRowIndex(), getColumnIndex()-1);
 		if(direction==Direction.UP)
-			if(getRowIndex()%(mazemap.getHeight()-1)==0)
+			if(Math.floorMod(getRowIndex(),mazemap.getHeight()-1)==0)
 				if( getRowIndex()==0)
-					buur=Square.of(mazemap,  mazemap.getHeight()-1, columnindex);
+					buur=Square.of(mazemap,  mazemap.getHeight()-1, getColumnIndex());
 				else	
 					buur=Square.of(mazemap, getRowIndex()-1, getColumnIndex());
 				
@@ -119,7 +127,7 @@ public class Square {
 					
 					buur=Square.of(mazemap, getRowIndex()+1, getColumnIndex());
 				else
-					buur=Square.of(mazemap, 0, columnindex);
+					buur=Square.of(mazemap, 0, getColumnIndex());
 			else
 				buur=Square.of(mazemap, getRowIndex()+1, getColumnIndex());
 		
@@ -133,11 +141,12 @@ public class Square {
 
 	/**
 	 * Returns whether this square's neighbor in the given direction is passable.
+	 * 
 	 */
 	// No formal documentation required
 	public boolean canMove(Direction direction) {
 	    Square buur=new Square();
-		buur=this.getNeighbor(direction);
+		buur=getNeighbor(direction);
 		
 		if(buur.isPassable()==true)
 			return true;
@@ -237,7 +246,8 @@ public class Square {
 	 * @throws IllegalArgumentException | other==null
 	 * @inspects |this
 	 * @inspects| other 
-	 */
+	 * 
+	 * 	 */
 	public boolean equals(Square other) {
 		if (other==null)
 			throw new IllegalArgumentException("argument for method can't be null");

@@ -20,13 +20,14 @@ public class PacMan {
 	public Square getSquare() { 
 		return square;
 	}
-	/*
-	 * @basic
+	/**
+	 *@basic
 	 */
 	public int getNbLives() { return nblives; }
 	/**
 	 * 
-	 * @pthrow IllegalArgumentException | nbLives<=0 || square==null
+	 * @throw IllegalArgumentException | nbLives<=0 
+	 * @throw IllegalArgumentException| square==null
 	 * @post | getNbLives()==nbLives
 	 * @post | getSquare()==square
 	 * 	 */
@@ -43,7 +44,9 @@ public class PacMan {
 	 * 
 	 * @throws IllegalArgumentException| square==null
 	 * @post| getSquare()==square
+	 * @post | getNbLives()==old(getNbLives())
 	 * @mutates|this
+	 * @inspects | square //NIET ZEKER
 	 */
 	public void setSquare(Square square) { 
 		if(square==null)
@@ -54,14 +57,19 @@ public class PacMan {
 	/**
 	 * Decreases this Pac-Man character's number of lives by one.
 	 * @post | getNbLives()==old(getNbLives())-1
-	 * @throws RuntimeException | getNbLives()==1
+	 * @post| getSquare()==old(getSquare())
+	 * @mutates|this
+	 * @inspects|this
+	 * @throws RuntimeException | getNbLives()==1  // LIJKT HIJ NIET TE PAKKEN WANT BLIJFT GRIJS?
 	 * 
 	 */
 	public void die() {
-		if (this.nblives==1)
-			throw new RuntimeException("Game Over");
+		
+		if(getNbLives()==0)  
+			throw new RuntimeException("out of lives");
 		else
 			nblives--;
+			
 	}
 
 }
