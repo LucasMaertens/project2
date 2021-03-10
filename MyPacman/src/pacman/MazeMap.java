@@ -6,6 +6,8 @@ package pacman;
  * @immutable
  * @invar |getWidth()>=1
  * @invar | getHeight()>=1
+ *
+ * 
 	 
  */
 public class MazeMap {
@@ -46,7 +48,7 @@ public class MazeMap {
 	 * The square in the top-left corner of the maze has row index 0 and column index 0.
 	 * @throws IllegalArgumentException| rowIndex<0 ||columnIndex<0 ||rowIndex>=getHeight() ||  columnIndex>=getWidth()
 	 * @basic
-	 * @inspects|this, rowIndex,columnIndex //NIET ZEKER
+	 * @inspects|this
 	 * @creates| result
 	 */
 	public boolean isPassable(int rowIndex, int columnIndex) { 
@@ -71,7 +73,6 @@ public class MazeMap {
 	 * @post | getHeight()==height
 	 * @post | getWidth()==width
 	 * @post | getHeight()*getWidth()==passable.length
-	 
 	 * 
 	 */
 	public MazeMap(int width, int height, boolean[] passable) {

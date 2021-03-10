@@ -7,7 +7,7 @@ import java.util.Arrays;
  * The top row and the leftmost column have index 0.
  * @invar|getColumnIndex()>=0
  * @invar | getRowIndex()>=0
- * @immutable // ben je dit zeker?
+ * @immutable 
  *
  */
 public class Square {
@@ -22,10 +22,10 @@ public class Square {
 	private int columnindex;
 	/**
 	 * @basic
-	 * @creates| mazemapwerk
+	 * @creates| result
 	 */
 	public MazeMap getMazeMap() {
-		MazeMap mazemapwerk=mazemap;
+		
 		return mazemap; 
 		}
 	/**
@@ -48,7 +48,7 @@ public class Square {
 	public boolean isPassable() { 
 		return getMazeMap().isPassable(this.getRowIndex(),this.getColumnIndex()); }
 	/**
-	 * @creates |werksquare
+	 * @creates | werksquare
 	 * @post | result!=null
 	 * @post | result.getRowIndex()==rowIndex
 	 * @post | result.getColumnIndex()==columnIndex
@@ -57,8 +57,7 @@ public class Square {
 	 * @throws IllegalArgumentException | columnIndex<0
 	 * @throws IllegalArgumentException | rowIndex<0
 	 * 
-	 * @inspects| rowIndex,columnIndex //mazemap kan hier niet staan wordt onderlijnd
-	 * //@mutates werksquare PAKT HIJ NIET+foutmelding dat het niet mag
+	 * 
 	 */
 	
 	public static Square of(MazeMap mazeMap, int rowIndex, int columnIndex) {
@@ -169,7 +168,6 @@ public class Square {
 				if (this.canMove(Direction.values()[0])==true)
 					lijst[0]=Direction.values()[0];
 				
-					
 				if (this.canMove(Direction.values()[1])==true)
 					lijst[1]=Direction.values()[1];
 					
@@ -179,9 +177,6 @@ public class Square {
 				for(int i=0;i<3;i++)
 					if (lijst[i]==null)
 						counter++;
-			
-				
-				
 		}			
 					
 		if(excludedDirection==Direction.RIGHT) {
@@ -195,11 +190,8 @@ public class Square {
 						lijst[2]=Direction.values()[3];
 				for(int i=0;i<3;i++)
 						if (lijst[i]==null)
-							counter++;
-					
-				
+							counter++;				
 		}
-		
 	    if	(excludedDirection==Direction.UP) {
 			if (this.canMove(Direction.values()[0]))
 				lijst[0]=Direction.values()[0];
@@ -209,9 +201,7 @@ public class Square {
 				lijst[2]=Direction.values()[2];
 			for(int i=0;i<3;i++)
 				if (lijst[i]==null)
-					counter++;
-			
-			
+					counter++;			
 			}
 			
 		if (excludedDirection==Direction.DOWN) {
@@ -225,8 +215,6 @@ public class Square {
 			for(int i=0;i<3;i++)
 				if (lijst[i]==null)
 					counter++;
-				
-			
 			}
 		Direction[] nieuwelijst=new Direction[3-counter];
 		for(int i=0;i<3;i++)
@@ -236,9 +224,7 @@ public class Square {
 		if(counter!=0)
 			return nieuwelijst;
 		else
-			return lijst;
-		 
-		 
+			return lijst; 
 	}
 	
 	/**

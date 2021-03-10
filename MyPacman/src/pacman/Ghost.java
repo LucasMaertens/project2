@@ -16,8 +16,8 @@ public class Ghost {
 	private Square square;
 	private Direction direction;
 	
-	/*
-	 * @basic
+	/**
+	 *@basic
 	 */
 	public Square getSquare() { return square; }
 	
@@ -76,6 +76,7 @@ public class Ghost {
 	public void setDirection(Direction direction) { 
 		if(direction !=null)
 			this.direction=direction;
+		
 		
 		//hier de else throw new illegal agument weggelaten, gaf anders altijd foutmeldinen/kan ook met instance of
 		//gedaan worden
